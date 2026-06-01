@@ -1,0 +1,5 @@
+src/LICENSE*
+src/README.md
+.scratchpath/*
+
+*.zip

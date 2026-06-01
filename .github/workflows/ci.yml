@@ -1,0 +1,42 @@
+name: 🧪 CI
+
+on: push
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  artifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: ⚙️ Checkout code
+        uses: actions/checkout@v6
+
+      - name: ⚙️ Make Script Executable
+        shell: bash
+        run: chmod +x ./package.ps1
+
+      - name: 🩹 Get Short SHA
+        id: short-sha
+        uses: hudsonm62/short-sha@v1
+
+      - name: 📦 Package RP
+        id: package
+        run: |
+          $Out = ./package.ps1 -Version "${{ steps.short-sha.outputs.sha }}"
+          echo "outFile=$($Out.Name)" >> $env:GITHUB_OUTPUT
+
+      - name: 📤 Upload RP Artifact
+        uses: actions/upload-artifact@v7
+        id: upload-artifact
+        with:
+          name: artifact-${{ steps.short-sha.outputs.short_sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+          path: ${{ steps.package.outputs.outFile }}
+          if-no-files-found: error
+          compression-level: 9

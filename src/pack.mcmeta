@@ -1,0 +1,9 @@
+{
+    "pack": {
+        "pack_format": 15,
+        "supported_formats": [4, 88],
+        "min_format": 4,
+        "max_format": 88,
+        "description": "§2■ v1.0\n§e■ Supports 1.12 to 26.2!"
+    }
+}

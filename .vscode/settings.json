@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "LICENSE": "txt",
+        "**/CODEOWNERS": "ignore",
+        "*.json5": "jsonc",
+        "**/options.txt": "toml",
+        "*.mcmeta": "json"
+    },
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+
+    "search.followSymlinks": false,
+    "search.smartCase": true,
+
+    "git.enableCommitSigning": true,
+    "git.ignoreLimitWarning": true
+}

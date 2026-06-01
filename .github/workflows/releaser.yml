@@ -1,0 +1,84 @@
+name: 📦 Releaser
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version Number (e.g. 1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  gh-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: ⚙️ Checkout code
+        uses: actions/checkout@v6
+
+      - name: ⚙️ Make Script Executable
+        shell: bash
+        run: chmod +x ./package.ps1
+
+      - name: 🔍 Check Tag doesn't exist
+        id: get-tag
+        run: |
+          $Version = "${{ github.event.inputs.version }}"
+          $Tag = "v$Version"
+
+          git fetch --tags
+          $tagExists = git tag --list $Tag
+          if ($tagExists) {
+            throw "❌ Tag '$Tag' already exists. Aborting release."
+          }
+          Write-Host "✅ Tag '$Tag' does not exist. Proceeding with release."
+
+          # Set output for next step
+          echo "version=$Tag" >> $env:GITHUB_OUTPUT
+
+      - name: 📦 Package RP
+        id: package
+        run: |
+          $Out = ./package.ps1 -Version "${{ github.event.inputs.version }}"
+          echo "outFile=$($Out.Name)" >> $env:GITHUB_OUTPUT
+
+      - name: 🩹 Get Short SHA
+        id: short-sha
+        uses: hudsonm62/short-sha@v1
+
+      - name: 📤 Upload RP Artifact
+        uses: actions/upload-artifact@v7
+        id: upload-artifact
+        with:
+          name: RoundCactus-${{ steps.get-tag.outputs.version }}_${{ steps.short-sha.outputs.short_sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+          path: ${{ steps.package.outputs.outFile }}
+          if-no-files-found: error
+          compression-level: 9
+
+      - name: 🏷️ Create Tag
+        id: create-tag
+        run: |
+          $Tag = "${{ steps.get-tag.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$Tag" -m "$Tag"
+          git push origin "$Tag"
+
+      - name: 🚀 Create Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.get-tag.outputs.version }}
+          name: ${{ steps.get-tag.outputs.version }}
+          generate_release_notes: false
+          draft: false
+          prerelease: false
+          append_body: true
+          files: ${{ steps.package.outputs.outFile }}

@@ -1,0 +1,17 @@
+# Default git behavior
+* text=auto
+
+### OVERRIDES ###
+
+# CRLF => LF
+.prettierrc      text  eol=lf
+.prettierignore  text  eol=lf
+*.md             text  eol=lf
+*.gitattributes  text  eol=lf
+*.gitmodules     text  eol=lf
+*.gitignore      text  eol=lf
+*.yml            text  eol=lf
+*.mcmeta         text  eol=lf
+*.ps1            text  eol=lf
+**/LICENSE       text  eol=lf
+**/CODEOWNERS    text  eol=lf
