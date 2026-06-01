@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v7
         id: upload-artifact
         with:
-          name: artifact-${{ steps.short-sha.outputs.short_sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+          name: artifact-${{ steps.short-sha.outputs.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
           path: ${{ steps.package.outputs.outFile }}
           if-no-files-found: error
           compression-level: 9
