@@ -1,0 +1,9 @@
+{
+    "pack": {
+        "pack_format": 3,
+        "supported_formats": [2, 3],
+        "min_format": 2,
+        "max_format": 3,
+        "description": "§2■ v1.1\n§e■ For 1.9 - 1.12.2"
+    }
+}

@@ -45,21 +45,18 @@ jobs:
           echo "version=$Tag" >> $env:GITHUB_OUTPUT
 
       - name: 📦 Package RP
-        id: package
-        run: |
-          $Out = ./package.ps1 -Version "${{ github.event.inputs.version }}"
-          echo "outFile=$($Out.Name)" >> $env:GITHUB_OUTPUT
+        run: ./package.ps1 -Version "${{ github.event.inputs.version }}"
 
       - name: 🩹 Get Short SHA
         id: short-sha
         uses: hudsonm62/short-sha@v1
 
-      - name: 📤 Upload RP Artifact
+      - name: 📤 Upload RP Artifacts
         uses: actions/upload-artifact@v7
         id: upload-artifact
         with:
-          name: RoundCactus-${{ steps.get-tag.outputs.version }}_${{ steps.short-sha.outputs.short_sha }}_${{ github.run_id }}_${{ github.run_attempt }}
-          path: ${{ steps.package.outputs.outFile }}
+          name: Round-Cactus-${{ steps.short-sha.outputs.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+          path: Round-Cactus-*.zip
           if-no-files-found: error
           compression-level: 9
 
@@ -81,4 +78,6 @@ jobs:
           draft: false
           prerelease: false
           append_body: true
-          files: ${{ steps.package.outputs.outFile }}
+          files: |
+            Round-Cactus-1.9-1.12.2_${{ github.event.inputs.version }}.zip
+            Round-Cactus-main_${{ github.event.inputs.version }}.zip

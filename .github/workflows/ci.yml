@@ -27,16 +27,14 @@ jobs:
         uses: hudsonm62/short-sha@v1
 
       - name: 📦 Package RP
-        id: package
         run: |
-          $Out = ./package.ps1 -Version "${{ steps.short-sha.outputs.sha }}"
-          echo "outFile=$($Out.Name)" >> $env:GITHUB_OUTPUT
+          ./package.ps1 -Version "${{ steps.short-sha.outputs.sha }}"
 
-      - name: 📤 Upload RP Artifact
+      - name: 📤 Upload RP Artifacts
         uses: actions/upload-artifact@v7
         id: upload-artifact
         with:
           name: artifact-${{ steps.short-sha.outputs.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
-          path: ${{ steps.package.outputs.outFile }}
+          path: Round-Cactus-*.zip
           if-no-files-found: error
           compression-level: 9
