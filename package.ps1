@@ -45,3 +45,5 @@ return @($legacy, $main) | ForEach-Object {
     [System.IO.Compression.ZipFile]::CreateFromDirectory($path, $OutputFile)
     Get-Item $OutputFile -Force -ErrorAction Stop
 }
+
+#Requires -Version 7
